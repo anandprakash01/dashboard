@@ -1,4 +1,6 @@
 import React from "react";
+// import {RiEmptyFolderLine} from "react-icons/ri";
+import {RiBarChartBoxLine} from "react-icons/ri";
 
 const WidgetContent = ({content}) => {
   if (!content) return null;
@@ -8,14 +10,21 @@ const WidgetContent = ({content}) => {
       return <p>{content.text}</p>;
 
     case "empty":
-      return <div className="text-gray-400 text-center py-4">{content.message}</div>;
+      return (
+        <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+          <RiBarChartBoxLine className="w-16 h-16 text-gray-300 mb-3" />
+          <p className="text-gray-500 text-sm font-medium">
+            {content.message || "No data available"}
+          </p>
+        </div>
+      );
 
     case "donut-chart":
       const {total, connected, notConnected} = content.data;
       const connectedPercentage = (connected / total) * 100;
 
       return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-between">
           <div className="relative w-32 h-32">
             <svg viewBox="0 0 36 36" className="w-full h-full">
               <path

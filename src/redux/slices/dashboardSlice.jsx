@@ -3,7 +3,7 @@ import dashboardDataJson from "../../data/dashboard.json";
 
 const initialState = {
   dashboardData: dashboardDataJson,
-  days: 7,
+  lastModifiedTime: "2025-04-24T15:30:00Z", // Example date, can be in several formats
   showAddWidgetModal: false,
   selectedCategory: null,
   newWidget: {
@@ -22,8 +22,8 @@ const dashboardSlice = createSlice({
     setDashboardData: (state, action) => {
       state.dashboardData = action.payload;
     },
-    setDays: (state, action) => {
-      state.days = action.payload;
+    setLastModifiedTime: (state, action) => {
+      state.lastModifiedTime = action.payload;
     },
     setShowAddWidgetModal: (state, action) => {
       state.showAddWidgetModal = action.payload;
@@ -161,7 +161,7 @@ const dashboardSlice = createSlice({
 
 export const {
   setDashboardData,
-  setDays,
+  setLastModifiedTime,
   setShowAddWidgetModal,
   setSelectedCategory,
   setNewWidget,

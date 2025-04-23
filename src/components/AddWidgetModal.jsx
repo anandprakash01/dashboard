@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {FaTimes} from "react-icons/fa";
 import {useSelector, useDispatch} from "react-redux";
 import {
+  setLastModifiedTime,
   setSelectedCategory,
   setNewWidget,
   addWidget,
@@ -11,9 +12,14 @@ import {
 
 const AddWidgetModal = () => {
   const dispatch = useDispatch();
-  const {dashboardData, selectedCategory, newWidget, isEditing, errors} = useSelector(
-    state => state.dashboard
-  );
+  const {
+    dashboardData,
+
+    selectedCategory,
+    newWidget,
+    isEditing,
+    errors,
+  } = useSelector(state => state.dashboard);
 
   return (
     <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
@@ -105,7 +111,11 @@ const AddWidgetModal = () => {
             </button>
             <button
               className="px-4 py-2 bg-green-600 text-white rounded-md cursor-pointer hover:bg-green-700 transition-all duration-300"
-              onClick={() => dispatch(addWidget())}
+              onClick={() => {
+                dispatch(addWidget());
+                dispatch(setLastModifiedTime(Date.now()));
+                // dispatch(setLastModifiedTime(new Date()));
+              }}
             >
               {isEditing ? "Update Widget" : "Add Widget"}
             </button>

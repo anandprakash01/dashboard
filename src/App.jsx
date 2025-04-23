@@ -5,18 +5,16 @@ import WidgetContent from "./components/WidgetContent";
 import {
   setShowAddWidgetModal,
   setSelectedCategory,
-  setErrors,
-  setNewWidget,
-  addWidget,
   removeWidget,
   startEditingWidget,
-  resetWidgetForm,
 } from "./redux/slices/dashboardSlice";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 function App() {
   const dispatch = useDispatch();
-  const {dashboardData, days, showAddWidgetModal} = useSelector(state => state.dashboard);
+  const {dashboardData, lastModifiedTime, showAddWidgetModal} = useSelector(
+    state => state.dashboard
+  );
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -28,43 +26,68 @@ function App() {
     ),
   }));
 
+  const [modifiedTime, setModifiedTime] = useState("");
+
+  const timeTracker = lastModified => {
+    const now = new Date();
+    let lastTime = new Date(lastModified);
+    const diffInSeconds = Math.floor((now - lastTime) / 1000);
+
+    if (diffInSeconds < 3600) {
+      // Less than an hour, display minutes
+      const minutes = Math.floor(diffInSeconds / 60);
+      return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+    } else if (diffInSeconds < 86400) {
+      // Less than a day, display hours
+      const hours = Math.floor(diffInSeconds / 3600);
+      return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+    } else {
+      // More than a day, display days
+      const days = Math.floor(diffInSeconds / 86400);
+      return `${days} day${days > 1 ? "s" : ""} ago`;
+    }
+  };
+  useEffect(() => {
+    setModifiedTime(timeTracker(lastModifiedTime));
+  });
+
   return (
     <div className="min-h-screen bg-blue-50 p-4">
       {/* ===============Header================ */}
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6">
         <h1 className="text-2xl font-bold text-gray-800">CNAPP Dashboard</h1>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
+          <div className="relative w-full sm:w-auto">
+            <input
+              type="text"
+              placeholder="Search widgets..."
+              className="bg-white pl-8 pr-3 py-1 rounded border w-full sm:w-auto"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+            />
+            <FaSearch className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500" />
+            {searchTerm && (
+              <button
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+                onClick={() => setSearchTerm("")}
+              >
+                <FaTimes size={12} />
+              </button>
+            )}
+          </div>
           <button
             onClick={() => {
               dispatch(setShowAddWidgetModal(true));
               dispatch(setSelectedCategory(null));
             }}
-            className="flex items-center gap-1 bg-white text-gray-700 px-3 py-1 rounded border cursor-pointer hover:bg-gray-200 transition-all duration-300"
+            className="flex items-center gap-1 bg-white text-gray-700 px-3 py-1 rounded border cursor-pointer hover:bg-gray-200 transition-all duration-300 w-full sm:w-auto justify-center sm:justify-start"
           >
             <FaPlus size={12} /> Add Widget
           </button>
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search widgets..."
-                className="bg-white pl-8 pr-3 py-1 rounded border"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-              />
-              <FaSearch className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              {searchTerm && (
-                <button
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
-                  onClick={() => setSearchTerm("")}
-                >
-                  <FaTimes size={12} />
-                </button>
-              )}
-            </div>
-            <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full border border-blue-300 flex items-center gap-1">
-              <span className="font-semibold">Last {days} days</span>
-            </div>
+          <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full border border-blue-300 flex items-center gap-1 w-full sm:w-auto justify-center sm:justify-start">
+            <span className="font-semibold">
+              <span className="hidden sm:inline">Updated</span> {modifiedTime}
+            </span>
           </div>
         </div>
       </header>
