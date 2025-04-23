@@ -3,7 +3,7 @@ import dashboardDataJson from "../../data/dashboard.json";
 
 const initialState = {
   dashboardData: dashboardDataJson,
-  lastModifiedTime: "2025-04-24T15:30:00Z", // Example date, can be in several formats
+  lastModifiedTime: "2025-04-20T10:30:00Z", // Example date, can be in several formats
   showAddWidgetModal: false,
   selectedCategory: null,
   newWidget: {
